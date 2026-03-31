@@ -1,57 +1,77 @@
-import type { ReactNode } from "react";
-import Link from "next/link";
-import { ArrowRight, BarChart3, Flame, Trees } from "lucide-react";
+"use client";
 
-export default function LandingPage() {
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Building2, Leaf, ThermometerSun } from "lucide-react";
+
+export default function SplashPage() {
+  const router = useRouter();
+  const [isLeaving, setIsLeaving] = useState(false);
+
+  useEffect(() => {
+    const fadeTimer = window.setTimeout(() => setIsLeaving(true), 2200);
+    const routeTimer = window.setTimeout(() => router.push("/dashboard"), 2800);
+
+    return () => {
+      window.clearTimeout(fadeTimer);
+      window.clearTimeout(routeTimer);
+    };
+  }, [router]);
+
   return (
-    <main className="min-h-screen px-4 py-6 md:px-8">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 rounded-[36px] bg-grid p-6 shadow-panel md:p-10">
-        <header className="flex flex-col gap-4 rounded-[28px] border border-white/70 bg-white/80 p-6 md:flex-row md:items-center md:justify-between">
-          <div>
-            <div className="text-sm uppercase tracking-[0.32em] text-emerald-700">CoolCity</div>
-            <h1 className="mt-3 max-w-3xl font-[family-name:var(--font-display)] text-4xl font-semibold leading-tight text-slate-950 md:text-6xl">
-              Simulate cooling strategies before cities spend a single rupee or dollar.
-            </h1>
-          </div>
-          <Link href="/dashboard" className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-5 py-3 text-white transition hover:bg-slate-800">
-            Open Dashboard
-            <ArrowRight size={18} />
-          </Link>
-        </header>
+    <main
+      className={`relative flex min-h-screen items-center justify-center overflow-hidden px-6 py-10 transition-opacity duration-700 ${
+        isLeaving ? "opacity-0" : "opacity-100"
+      }`}
+    >
+      <div className="splash-gradient absolute inset-0" />
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {[...Array(14)].map((_, index) => (
+          <span
+            key={index}
+            className="splash-particle absolute rounded-full bg-white/30"
+            style={{
+              left: `${8 + index * 6.5}%`,
+              top: `${12 + (index % 5) * 14}%`,
+              width: `${8 + (index % 4) * 4}px`,
+              height: `${8 + (index % 4) * 4}px`,
+              animationDelay: `${index * 0.18}s`
+            }}
+          />
+        ))}
+      </div>
 
-        <section className="grid gap-4 md:grid-cols-[1.2fr_0.8fr]">
-          <div className="rounded-[32px] border border-white/70 bg-slate-950 p-8 text-white shadow-panel">
-            <div className="inline-flex rounded-full bg-white/10 px-3 py-1 text-sm text-emerald-200">AI-powered intervention simulator</div>
-            <p className="mt-5 max-w-2xl text-lg text-slate-200">
-              Detect heat zones, test intervention scenarios, optimize budgets, and export stakeholder-ready outputs from one modern dashboard.
-            </p>
-            <div className="mt-8 grid gap-4 md:grid-cols-3">
-              <FeatureCard title="Heat Detection" icon={<Flame size={18} />} text="Color-coded map overlays reveal current urban heat stress." />
-              <FeatureCard title="Simulation" icon={<Trees size={18} />} text="Model trees, cool roofs, green walls, and water bodies." />
-              <FeatureCard title="Optimization" icon={<BarChart3 size={18} />} text="Recommend the best intervention mix for a target budget." />
-            </div>
+      <div className="relative z-10 flex w-full max-w-4xl flex-col items-center justify-center text-center">
+        <div className="splash-logo-glow splash-float splash-bounce relative flex h-28 w-28 items-center justify-center rounded-[32px] border border-white/35 bg-white/15 backdrop-blur-xl md:h-32 md:w-32">
+          <div className="absolute inset-3 rounded-[26px] bg-gradient-to-br from-teal-300/70 via-cyan-200/40 to-green-300/70 blur-xl" />
+          <div className="relative flex items-center gap-1 text-white">
+            <Building2 size={28} />
+            <Leaf size={22} className="-ml-1 mt-5" />
+            <ThermometerSun size={24} className="-ml-1 -mt-5" />
           </div>
-          <div className="rounded-[32px] border border-white/70 bg-white/85 p-8 shadow-panel">
-            <div className="text-sm uppercase tracking-[0.25em] text-slate-500">Demo flow</div>
-            <ol className="mt-5 space-y-4 text-slate-700">
-              <li>1. Review the dashboard and current heat conditions.</li>
-              <li>2. Explore the heat map to identify high-risk zones.</li>
-              <li>3. Run a simulation with cooling interventions.</li>
-              <li>4. Open results to compare impact and optimize budget.</li>
-            </ol>
-          </div>
-        </section>
+        </div>
+
+        <div className="splash-fade-up mt-8">
+          <h1 className="bg-gradient-to-r from-teal-100 via-cyan-50 to-green-100 bg-clip-text text-5xl font-black tracking-tight text-transparent drop-shadow-[0_12px_30px_rgba(15,23,42,0.18)] md:text-7xl">
+            CoolCity
+          </h1>
+          <p className="mt-4 text-base font-medium tracking-[0.12em] text-white/90 md:text-lg">
+            Smart Climate Intelligence for Cooler Cities
+          </p>
+          <p className="mt-2 text-sm text-white/75 md:text-base">
+            Predict. Prevent. Cool.
+          </p>
+        </div>
+
+        <div className="splash-fade-up-delay mt-12 flex items-center gap-3 rounded-full border border-white/30 bg-white/12 px-5 py-3 text-sm font-medium text-white/90 backdrop-blur-md">
+          <span>Loading CoolCity</span>
+          <span className="flex items-center gap-1">
+            <span className="loading-dot h-2 w-2 rounded-full bg-white/90" />
+            <span className="loading-dot h-2 w-2 rounded-full bg-white/75" style={{ animationDelay: "0.2s" }} />
+            <span className="loading-dot h-2 w-2 rounded-full bg-white/60" style={{ animationDelay: "0.4s" }} />
+          </span>
+        </div>
       </div>
     </main>
-  );
-}
-
-function FeatureCard({ title, text, icon }: { title: string; text: string; icon: ReactNode }) {
-  return (
-    <div className="rounded-[24px] bg-white/10 p-4">
-      <div className="mb-3 inline-flex rounded-full bg-white/10 p-2">{icon}</div>
-      <div className="font-medium">{title}</div>
-      <div className="mt-2 text-sm text-slate-300">{text}</div>
-    </div>
   );
 }

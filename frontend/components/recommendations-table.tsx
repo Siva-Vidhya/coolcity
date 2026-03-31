@@ -15,7 +15,7 @@ export function RecommendationsTable({ rows, currency }: { rows: Recommendation[
         </thead>
         <tbody>
           {rows.map((row) => (
-            <tr key={`${row.strategy}-${row.units}`} className="border-t border-slate-100 text-sm text-slate-700">
+            <tr key={`${row.strategy}-${row.units}`} className="border-t border-slate-100 text-sm text-slate-700 dark:border-slate-700 dark:text-slate-300">
               <td className="px-4 py-3">{row.strategy}</td>
               <td className="px-4 py-3">{row.units}</td>
               <td className="px-4 py-3">

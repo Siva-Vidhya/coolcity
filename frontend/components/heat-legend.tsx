@@ -8,8 +8,8 @@ export function HeatLegend() {
   return (
     <div className="flex flex-wrap gap-3">
       {legend.map((item) => (
-        <div key={item.label} className={`heat-badge ${item.badge}`}>
-          <span className={`h-3 w-3 rounded-full shadow-sm ${item.dot}`} />
+        <div key={item.label} className={`heat-badge shadow-sm hover:-translate-y-0.5 hover:shadow-float ${item.badge}`}>
+          <span className={`h-3.5 w-3.5 rounded-full shadow-sm transition duration-300 animate-pulse ${item.dot}`} />
           {item.label}
         </div>
       ))}

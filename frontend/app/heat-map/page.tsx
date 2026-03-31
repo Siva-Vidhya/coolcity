@@ -1,17 +1,18 @@
 import { DashboardShell } from "@/components/dashboard-shell";
-import { HeatMapCard } from "@/components/heat-map-card";
+import { HeatMapIntelligencePanel } from "@/components/heat-map-intelligence-panel";
 import { getHeatData } from "@/lib/api";
 
-export default async function HeatMapPage() {
+export default async function HeatMapPage({
+  searchParams
+}: {
+  searchParams?: Promise<{ view?: string }>;
+}) {
   const data = await getHeatData();
+  const params = searchParams ? await searchParams : undefined;
 
   return (
     <DashboardShell title="Heat Map View" eyebrow="Heat detection">
-      <HeatMapCard
-        cells={data.cells}
-        title="Interactive Heatmap Overlay"
-        description="Leaflet-based map with heat zone circles for rapid hotspot analysis."
-      />
+      <HeatMapIntelligencePanel initialData={data} initialView={params?.view} />
     </DashboardShell>
   );
 }
