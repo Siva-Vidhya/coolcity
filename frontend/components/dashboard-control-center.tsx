@@ -67,6 +67,15 @@ function alertTone(severity: HeatAlert["severity"]) {
   return "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/70 dark:bg-emerald-950/40 dark:text-emerald-200";
 }
 
+function formatLocationString(fullAddress: string) {
+  if (!fullAddress || fullAddress.length < 30) return fullAddress;
+  const parts = fullAddress.split(",").map(p => p.trim());
+  if (parts.length >= 3) {
+    return `${parts[0]}, ${parts[parts.length - 3] ?? parts[1]}`;
+  }
+  return fullAddress;
+}
+
 export function DashboardControlCenter({ initialData }: { initialData: HeatDataResponse }) {
   const {
     selectedCity,
@@ -106,7 +115,7 @@ export function DashboardControlCenter({ initialData }: { initialData: HeatDataR
   };
 
   const heatRisk = useMemo(() => riskTone(heatRiskScore), [heatRiskScore]);
-  const cityLabel = selectedLocation?.label ?? CITY_COORDINATES[selectedCity].label;
+  const cityLabel = formatLocationString(selectedLocation?.label ?? CITY_COORDINATES[selectedCity].label);
   const temperatureTrend =
     cityData.summary.average_temperature >= initialData.summary.average_temperature
       ? { direction: "up" as const, label: "Rising" }
@@ -149,78 +158,48 @@ export function DashboardControlCenter({ initialData }: { initialData: HeatDataR
           </div>
         ) : null}
 
-        <div className="mb-5 flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
-          <div>
-            <div className="inline-flex rounded-full border border-emerald-100 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-[0.25em] text-primary dark:border-slate-700 dark:bg-slate-900/80">
+        <div className="mb-6 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+          <div className="max-w-3xl">
+            <div className="inline-flex rounded-full border border-emerald-100 bg-white/70 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.25em] text-primary dark:border-slate-700 dark:bg-slate-900/80">
               Real-Time Climate Intelligence
             </div>
-            <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950 dark:text-slate-100 md:text-[2rem]">
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-slate-950 dark:text-slate-100 md:text-4xl md:leading-tight">
               Smart city climate intelligence for {cityLabel}
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+            <p className="mt-3 text-base leading-relaxed text-slate-600 dark:text-slate-300">
               Live geolocation, weather, AQI, population density, and a data-driven alert engine are synchronized into one operational dashboard.
             </p>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
-            <div className="glass-card rounded-[26px] px-4 py-3">
-              <div className="flex items-center gap-3">
-                <div className="rounded-2xl bg-emerald-50 p-2 text-primary dark:bg-slate-800">
-                  <Clock3 size={18} />
+          <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+            <div className="glass-card flex items-center gap-4 rounded-full px-5 py-3">
+              <div className="flex items-center gap-3 border-r border-slate-200 pr-4 dark:border-slate-700">
+                <Clock3 size={18} className="text-primary" />
+                <div className="font-semibold tracking-wide text-slate-900 dark:text-slate-100">
+                  {currentTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
                 </div>
-                <div>
-                  <div className="text-xs uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">Live Clock</div>
-                  <div className="mt-1 text-lg font-semibold text-slate-950 dark:text-slate-100">
-                    {currentTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}
-                  </div>
-                </div>
-                <div className="ml-2 flex items-center gap-2 rounded-full border border-white/50 bg-white/55 px-3 py-2 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-200">
-                  {liveWeather.iconCode ? (
-                    <Image
-                      src={`https://openweathermap.org/img/wn/${liveWeather.iconCode}@2x.png`}
-                      alt={liveWeather.condition}
-                      width={36}
-                      height={36}
-                      className="h-9 w-9"
-                      unoptimized
-                    />
-                  ) : (
-                    <CloudSun size={18} className="text-primary" />
-                  )}
-                  <span>{liveWeather.condition}</span>
-                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {liveWeather.iconCode ? (
+                  <Image
+                    src={`https://openweathermap.org/img/wn/${liveWeather.iconCode}@2x.png`}
+                    alt={liveWeather.condition}
+                    width={32}
+                    height={32}
+                    className="h-8 w-8"
+                    unoptimized
+                  />
+                ) : (
+                  <CloudSun size={18} className="text-primary" />
+                )}
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{liveWeather.condition}</span>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => setAlertPanelOpen((prev) => !prev)}
-                className="climate-button border border-emerald-100 bg-white/85 text-slate-800 hover:border-emerald-300 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-100"
-              >
-                <span className="relative">
-                  <Bell size={16} />
-                  {activeAlerts.length > 0 ? <span className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-red-500" /> : null}
-                </span>
-                Alert Center
-              </button>
-              <select
-                value={selectedCity}
-                onChange={(event) => setSelectedCity(event.target.value as keyof typeof CITY_COORDINATES)}
-                className="rounded-full border border-emerald-100 bg-white/85 px-4 py-3 text-sm text-slate-800 shadow-sm outline-none transition hover:border-emerald-300 dark:border-slate-700 dark:bg-slate-900/80 dark:text-slate-100"
-                aria-label="Quick climate profile"
-              >
-                {Object.entries(CITY_COORDINATES).map(([key, profile]) => (
-                  <option key={key} value={key}>
-                    {profile.label} profile
-                  </option>
-                ))}
-              </select>
-              <button type="button" onClick={() => void refresh()} className="climate-button bg-primary text-white hover:bg-accent">
-                <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
-                Refresh Data
-              </button>
-            </div>
+            <button type="button" onClick={() => void refresh()} className="climate-button bg-primary text-white shadow-md hover:bg-accent hover:shadow-lg">
+              <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
+              Refresh Data
+            </button>
           </div>
         </div>
 

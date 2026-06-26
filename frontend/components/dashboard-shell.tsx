@@ -67,31 +67,19 @@ export function DashboardShell({
       <main className="relative ml-0 flex-1 w-full min-w-0 lg:ml-72">
         <div className="w-full px-4 py-4 md:px-6 md:py-6">
           <div className="dashboard-surface bg-grid page-shell-entrance min-h-[calc(100vh-2rem)] w-full min-w-0 p-6 md:p-8">
-            <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="mb-8 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="relative">
-                <div className="text-sm uppercase tracking-[0.3em] text-primary">{eyebrow}</div>
-                <h1 className="mt-3 bg-gradient-to-r from-slate-950 via-teal-700 to-emerald-500 bg-clip-text text-3xl font-semibold tracking-tight text-transparent dark:from-white dark:via-cyan-200 dark:to-emerald-300 md:text-[2.8rem]">
+                <div className="text-sm font-semibold uppercase tracking-[0.3em] text-primary">{eyebrow}</div>
+                <h1 className="mt-2 bg-gradient-to-br from-slate-950 via-teal-800 to-emerald-600 bg-clip-text text-4xl font-bold tracking-tight text-transparent dark:from-white dark:via-cyan-200 dark:to-emerald-300 md:text-5xl">
                   {title}
                 </h1>
-                <div className="mt-4 flex flex-wrap gap-3">
-                  <div className="glass-card inline-flex items-center gap-2 px-4 py-2 text-sm">
-                    <MapPin size={15} className="text-primary" />
-                    <span>{selectedLocation?.label ?? "Detecting location"}</span>
-                  </div>
-                  <div className="glass-card inline-flex items-center gap-2 px-4 py-2 text-sm">
-                    <ThermometerSun size={15} className="text-orange-500 animate-pulse" />
-                    <span>{weather ? `${weather.temperature} deg C · ${weather.condition}` : "Live weather syncing"}</span>
-                  </div>
-                  <div className="glass-card inline-flex items-center gap-2 px-4 py-2 text-sm">
-                    <Waves size={15} className="text-accent" />
-                    <span>Heat score {heatRiskScore}/100</span>
-                  </div>
-                </div>
               </div>
 
-              <div className="flex flex-col items-stretch gap-3 xl:items-end">
-                <IndiaLocationPicker />
-                <div className="flex flex-wrap items-center justify-end gap-3">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-end">
+                <div className="min-w-[280px]">
+                  <IndiaLocationPicker />
+                </div>
+                <div className="flex items-center gap-3">
                   <GlobalAlertCenter />
                   <UserMenu />
                 </div>
