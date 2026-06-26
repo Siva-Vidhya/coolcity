@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" className="h-full" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen bg-slate-50 font-[family-name:var(--font-manrope)] text-slate-900 transition-colors duration-300 dark:bg-slate-950 dark:text-slate-100">
         <script
           dangerouslySetInnerHTML={{
